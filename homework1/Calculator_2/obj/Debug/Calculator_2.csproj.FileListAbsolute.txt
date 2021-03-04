@@ -1,0 +1,10 @@
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\bin\Debug\Calculator_2.exe.config
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\bin\Debug\Calculator_2.exe
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\bin\Debug\Calculator_2.pdb
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.csprojAssemblyReference.cache
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.Form1.resources
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.Properties.Resources.resources
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.csproj.GenerateResource.cache
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.csproj.CoreCompileInputs.cache
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.exe
+C:\Users\17967\Desktop\Calculator_2\Calculator_2\Calculator_2\obj\Debug\Calculator_2.pdb
