@@ -1,0 +1,7 @@
+C:\Users\17967\Desktop\homework2\homework2_2\bin\Debug\homework2_2.exe.config
+C:\Users\17967\Desktop\homework2\homework2_2\bin\Debug\homework2_2.exe
+C:\Users\17967\Desktop\homework2\homework2_2\bin\Debug\homework2_2.pdb
+C:\Users\17967\Desktop\homework2\homework2_2\obj\Debug\homework2_2.csprojAssemblyReference.cache
+C:\Users\17967\Desktop\homework2\homework2_2\obj\Debug\homework2_2.csproj.CoreCompileInputs.cache
+C:\Users\17967\Desktop\homework2\homework2_2\obj\Debug\homework2_2.exe
+C:\Users\17967\Desktop\homework2\homework2_2\obj\Debug\homework2_2.pdb
