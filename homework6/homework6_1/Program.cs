@@ -10,22 +10,29 @@ namespace homework6_1
 {
     public class Order : IComparable
     {
-        public String ID { get; set; }
-        public Customer customer { get; set; }
-        public String Time { get; set; }
-        public double Money { get; set; }
+        public int ID { get; set; }
+        public string customerName { get; set; }
+        public int Money { get; set; }
 
-        public List<OrderDetails> orderdetails = new List<OrderDetails>();
-        public Order() { }
-        public Order(string cus, List<OrderDetails> orderDetails)
-        {
-            this.customer.Name = cus;
-            this.orderdetails = orderDetails;
-
-        }
+        public OrderDetails[] Orderdetails;
         public override string ToString()
         {
-            return "ID:" + ID + "\n" + "Time:" + Time + "\n" + "Customer:" + customer + "\n" + "Money:" + Money;
+            return "ID:" + ID + "\n" + "Customer's name:" + customerName + "\n" + "Money:" + Money + "\n" + "OrderDetails:" + Orderdetails;
+        }
+        public Order() { }
+        public Order(int id, string customername, int money, params OrderDetails[] orderdetails)
+        {
+            ID = id;
+            customerName = customername;
+            Money = money;
+            Orderdetails = orderdetails;
+        }
+        public Order(int id, string commodityname, int commodityNum, string customername, int money)
+        {
+            ID = id;
+            Money = money;
+            customerName = customername;
+            Orderdetails = new[] { new OrderDetails(commodityname, commodityNum) };
         }
         public int CompareTo(Object obj)
         {
@@ -36,153 +43,136 @@ namespace homework6_1
         public override bool Equals(object obj)
         {
             Order a = obj as Order;
-            return this.ID == a.ID;
+            return this.ID == a.ID &&
+                   this.customerName == a.customerName &&
+                   this.Money == a.Money &&
+                   this.Orderdetails == a.Orderdetails;
         }
         public override int GetHashCode()
         {
-            return Convert.ToInt32(ID);
+            return Convert.ToInt32(ID) + Convert.ToInt32(customerName) + Convert.ToInt32(Money) + Convert.ToInt32(Orderdetails);
         }
     }
     public class OrderDetails
     {
-        public Dictionary<Commodity, int> CommodityNum { get; set; }
-        public OrderDetails(Dictionary<Commodity, int> n)
+        public string CommodityName { get; set; }
+        public int CommodityNum { get; set; }
+        public OrderDetails() { }
+        public OrderDetails(string commodityName, int commodityNum)
         {
-            CommodityNum = n;
-        }
-
-        private string name;
-        private int amount;
-        private double price;
-        public string Name { get; set; }
-        public int Amount { get; set; }
-        public double Price { get; set; }
-
-
-        public OrderDetails(String name, int amount, double price)
-        {
-            Name = name;
-            Amount = amount;
-            Price = price;
+            CommodityName = commodityName;
+            CommodityNum = commodityNum;
         }
         public override string ToString()
         {
-            return "Name:" + Name + "\n" + "Amount:" + Amount + "\n" + "Commodity:" + CommodityNum + "\n" + "Price:" + Price;
+            return "CommodityName:" + CommodityName + "\n" + "CommodityNum:" + CommodityNum;
         }
         public override bool Equals(object obj)
         {
             if (!(obj is OrderDetails)) throw new SystemException();
             OrderDetails orderdetails = obj as OrderDetails;
-            return this.name == orderdetails.name && this.price == orderdetails.price && this.amount == orderdetails.amount && this.CommodityNum == orderdetails.CommodityNum;
+            return this.CommodityName == orderdetails.CommodityName && this.CommodityNum == orderdetails.CommodityNum;
         }
         public override int GetHashCode()
         {
-            return Convert.ToInt32(Name) + Convert.ToInt32(Amount) + Convert.ToInt32(CommodityNum) + Convert.ToInt32(Price);
+            return Convert.ToInt32(CommodityName) + Convert.ToInt32(CommodityNum);
         }
-
     }
     public class OrderService
     {
-        private static int orderNum = 0;
-        //商品列表
-        public static Commodity banana = new Commodity("banana", 10);
-        public static Commodity apple = new Commodity("apple", 15);
-
         //订单List
         public List<Order> Orders = new List<Order>();
 
         //添加订单
-        public bool AddOrder(string customer, Dictionary<Commodity, int> commodityBuy)
+        public bool AddOrder(Order order)
         {
-            int paymoney = 0;
-            foreach (var item in commodityBuy)
+            if (order == null || order.Orderdetails == null)
             {
-                paymoney += (item.Key.Price * item.Value);
+                throw new OrderException("添加参数不能为空");
             }
-            Order newOrder = new Order();
-            //判断订单内是否有相同项
-            foreach (var item in Orders)
+            if (Orders.Where(o => o.ID == order.ID).Any())
             {
-                if (newOrder.Equals(item)) return false;
+                return false;
             }
-            Orders.Add(new Order());
-            orderNum++;
-            Console.WriteLine("添加订单成功");
+            Orders.Add(order);
             return true;
         }
         //修改订单
-        public void ChangeOrder(string ID, string newname)
+        public void ChangeOrder(Order order)
         {
-            if (ID == null || ID.Length >= Orders.Count)
-                throw new OrderException("该订单不存在");
-            Orders[int.Parse(ID)].customer.Name = newname;
+            if (order == null)
+                throw new OrderException("修改参数不能为空！");
+            var changedOrder = Orders.Where(o => o.ID == order.ID).FirstOrDefault();
+            if (changedOrder == null)
+                throw new OrderException("被修改订单不存在");
+            else
+            {
+                if (order.customerName != null && order.Orderdetails != null && order.Money > 0)
+                {
+                    changedOrder.customerName = order.customerName;
+                    changedOrder.Orderdetails = order.Orderdetails;
+                    changedOrder.Money = order.Money;
+                }
+            }
         }
         //删除订单
-        public void DeleteOrder(string ID)
+        public void DeleteOrder(int ID)
         {
-            if (ID == null || ID.Length >= Orders.Count)
+            var deletedOrder = Orders.Where(o => o.ID == ID).FirstOrDefault();
+            if (deletedOrder == null)
                 throw new OrderException("该订单不存在");
-            Orders.RemoveAt(int.Parse(ID));
+            Orders.Remove(deletedOrder);
         }
 
         //通过ID查询Order
-        public List<Order> IDFind(string ID)
+        public List<Order> IDFind(int ID)
         {
             var query = Orders
                 .Where(s => s.ID == ID)
                 .OrderBy(s => s.Money);
             return query.ToList<Order>();
         }
-        //通过name查询Order
+        //通过customerName查询Order
         public List<Order> NameFind(string name)
         {
             var query = Orders
-                .Where(s => s.customer.Name == name)
+                .Where(s => s.customerName == name)
                 .OrderBy(s => s.Money);
             return query.ToList<Order>();
         }
         //排序
-        public void OrderSort()
+        public void OrderSort(int ID)
         {
-            Orders.Sort();
+
+            Orders.Where(o => o.ID == ID).FirstOrDefault();
         }
         public void SortOrder(Comparison<Order> t)
         {
             Orders.Sort(t);
         }
-        public void Export()
+        public void Export(string fileName)
         {
-            try
-            {
+            
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Order[]));
                 Order[] temp = Orders.ToArray();
-                using (FileStream fs = new FileStream("s.xml", FileMode.Create))
+                using (FileStream fs = new FileStream(fileName, FileMode.Create))
                 {
                     xmlSerializer.Serialize(fs, temp);
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+           
         }
-        public void Import()
+        public void Import(string fileName)
         {
-            try
-            {
+                if (!File.Exists(fileName))
+                    throw new InvalidOperationException("文件不存在");
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Order[]));
                 Order[] temp = Orders.ToArray();
-                using (FileStream fs = new FileStream("Orders.xml", FileMode.Open))
+                using (FileStream fs = new FileStream(fileName, FileMode.Open))
                 {
                     temp = (Order[])xmlSerializer.Deserialize(fs);
                 }
                 this.Orders = temp.ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("该文件不存在！");
-                Console.WriteLine(e.Message);
-            }
+           
         }
     }
     public class OrderException : Exception
@@ -191,82 +181,49 @@ namespace homework6_1
     }
     public class Customer
     {
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public List<String> commodityBuy = new List<string>();
+        public string CustomerName { get; set; }
+
+        public string[] CommodityBuy;
         public override string ToString()
         {
             string str = "";
-            foreach (String commodity in commodityBuy)
+            foreach (String commodity in CommodityBuy)
             {
                 str += commodity + " ";
             }
-            return "Name:" + Name + "\n" + "Buy commodity:" + str;
+            return "CustomerName:" + CustomerName + "\n" + "Buy commodity:" + str;
         }
     }
     public class Commodity
     {
-        public string Name { get; set; }
-        public int Price { get; set; }
+        public string CommodityName { get; set; }
+        public int UnitPrice { get; set; }
 
-        public Commodity(string name, int price)
+        public Commodity(string commodityName, int unitPrice)
         {
-            Name = name;
-            Price = price;
+            CommodityName = commodityName;
+            UnitPrice = unitPrice;
         }
         public override string ToString()
         {
-            return "Commodity:" + Name + "\n" + "Price:" + Price;
+            return "CommodityName:" + CommodityName + "\n" + "UnitPrice:" + UnitPrice;
         }
     }
     class Program
     {
         static void Main(string[] args)
         {
-            OrderService orderservice = new OrderService();
-            //购物一次
-            Dictionary<Commodity, int> customer1 = new Dictionary<Commodity, int>()
-            {
-                {OrderService.banana,7 },
-                {OrderService.apple,14 }
-            };
-            orderservice.AddOrder("Aaron", customer1);
-            //通过订单号查询订单
-            Console.WriteLine("根据订单号查询到：");
-            orderservice.IDFind("0");
-            //通过姓名查询
-            Console.WriteLine("根据姓名查询结果：");
-            orderservice.NameFind("Aaron");
-            //修改姓名
-            try
-            {
-                Console.WriteLine("修改姓名为：");
-                orderservice.ChangeOrder("0", "Bob");
-            }
-            catch (OrderException e)
-            {
-                Console.WriteLine("修改订单失败" + e.Message);
-            }
-            //删除订单
-            try
-            {
-                Console.WriteLine("删除订单");
-                orderservice.DeleteOrder("0");
-            }
-            catch (OrderException e)
-            {
-                Console.WriteLine("删除订单失败" + e.Message);
-            }
-            //排序订单
-            //再购一次物
-            Dictionary<Commodity, int> customer2 = new Dictionary<Commodity, int>()
-            {
-                {OrderService.banana,2 },
-                {OrderService.apple,2 }
-            };
-            Console.WriteLine("排序结果如下：");
-            orderservice.OrderSort();
+            OrderService orderService = new OrderService();
 
+            orderService.AddOrder(new Order(0, "apple", 1, "Aaron", 5));
+            orderService.AddOrder(new Order(1, "banana", 5, "Aaron", 10));
+            orderService.AddOrder(new Order(2, "Aaron", 50, new OrderDetails("apple", 6),
+                                                           new OrderDetails("banana", 5)
+            ));
+            orderService.ChangeOrder(new Order(0, "apple", 2, "Aaron", 10));
+            orderService.DeleteOrder(1);
+            orderService.IDFind(2);
+            orderService.NameFind("Aaron");
         }
     }
 }
