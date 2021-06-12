@@ -1,0 +1,7 @@
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.csprojAssemblyReference.cache
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.AssemblyInfoInputs.cache
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.AssemblyInfo.cs
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.csproj.CoreCompileInputs.cache
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\17967\Desktop\homework12\TodoApi\obj\Debug\net5.0\TodoApi.MvcApplicationPartsAssemblyInfo.cache
